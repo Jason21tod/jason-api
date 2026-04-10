@@ -1,0 +1,50 @@
+
+import smtplib
+import os
+
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+
+
+_SERVER_ADDRESS = "smtp.gmail.com"
+_PORT = 587
+_SENDER_EMAIL = str(os.environ.get("EMAIL_SENDER"))
+_RECEIVER_EMAIL = str(os.environ.get("EMAIL_RECEIVER"))
+_PASSWORD = str(os.environ.get("EMAIL_APP_PASSWORD"))
+
+
+class __MailSender():
+    """Base class to send emails."""
+    @classmethod
+    def __setup_server(cls) -> smtplib.SMTP:
+        """Setup the conection with the server.
+        """
+        server = smtplib.SMTP(_SERVER_ADDRESS, _PORT)
+        server.ehlo()
+        server.starttls()
+        server.login(_SENDER_EMAIL, _PASSWORD)
+        return server
+
+    @classmethod
+    def __setup_msg(cls, subject, body):
+        msg = MIMEMultipart()
+        msg['Subject'] = subject
+        msg['From'] = _SENDER_EMAIL
+        msg['To'] = _RECEIVER_EMAIL
+        msg.attach(MIMEText(body))
+        return msg
+    
+class ProposalSender(__MailSender):
+    @classmethod
+    def send_proposal(cls, subject: str, body: str):
+        """Main function used to send proposals from customer to dev email directly.
+        - subject: str -> Used to set the subject of the email.
+        - body: The body of the email
+        """
+        server: smtplib.SMTP = cls.__setup_server()
+        msg = cls.__setup_msg(subject, body)
+        response = str(server.sendmail(_SENDER_EMAIL, _RECEIVER_EMAIL, msg.as_string()))
+        
+        server.quit()
+        return response
