@@ -1,5 +1,6 @@
 import flask 
 import logging
+from app.email_resources import ProposalSender
 
 
 def create_app():
@@ -12,10 +13,9 @@ def create_app():
         app.logger.info("hello from world")
         return "Salve world!"
 
-    @app.route("/send_test_mail")
+    @app.route("/send_test_mail", methods=["GET", "POST"])
     def send_mail():
-
+        response = ProposalSender.send_proposal("Proposta de ", "Uma nova proposta")
         return response
-
 
     return app

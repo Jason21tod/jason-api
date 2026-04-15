@@ -17,17 +17,17 @@ _PASSWORD = str(os.environ.get("EMAIL_APP_PASSWORD"))
 class __MailSender():
     """Base class to send emails."""
     @classmethod
-    def __setup_server(cls) -> smtplib.SMTP:
+    def _setup_server(cls) -> smtplib.SMTP:
         """Setup the conection with the server.
         """
         server = smtplib.SMTP(_SERVER_ADDRESS, _PORT)
         server.ehlo()
         server.starttls()
-        server.login(_SENDER_EMAIL, _PASSWORD)
+        print(server.login(_SENDER_EMAIL, _PASSWORD))
         return server
 
     @classmethod
-    def __setup_msg(cls, subject, body):
+    def _setup_msg(cls, subject, body):
         msg = MIMEMultipart()
         msg['Subject'] = subject
         msg['From'] = _SENDER_EMAIL
@@ -42,8 +42,8 @@ class ProposalSender(__MailSender):
         - subject: str -> Used to set the subject of the email.
         - body: The body of the email
         """
-        server: smtplib.SMTP = cls.__setup_server()
-        msg = cls.__setup_msg(subject, body)
+        server: smtplib.SMTP = cls._setup_server()
+        msg = cls._setup_msg(subject, body)
         response = str(server.sendmail(_SENDER_EMAIL, _RECEIVER_EMAIL, msg.as_string()))
         
         server.quit()
