@@ -2,6 +2,7 @@
 import smtplib
 import os
 
+from flask import current_app
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -40,11 +41,12 @@ class ProposalSender(__MailSender):
     def send_proposal(cls, subject: str, body: str):
         """Main function used to send proposals from customer to dev email directly.
         - subject: str -> Used to set the subject of the email.
-        - body: The body of the email
+        - body: str-> The body of the email
         """
         server: smtplib.SMTP = cls._setup_server()
         msg = cls._setup_msg(subject, body)
         response = str(server.sendmail(_SENDER_EMAIL, _RECEIVER_EMAIL, msg.as_string()))
         
         server.quit()
+        current_app.logger.info("Proposal Sended...")
         return response
