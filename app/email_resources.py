@@ -7,14 +7,13 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 
-
 _SERVER_ADDRESS = "smtp.gmail.com"
 _PORT = 587
 _SENDER_EMAIL = str(os.environ.get("EMAIL_SENDER"))
 _RECEIVER_EMAIL = str(os.environ.get("EMAIL_RECEIVER"))
 _PASSWORD = str(os.environ.get("EMAIL_APP_PASSWORD"))
 
-if _SENDER_EMAIL == None or _RECEIVER_EMAIL == None or _PASSWORD == None:
+if _SENDER_EMAIL == "None" or _RECEIVER_EMAIL == "None" or _PASSWORD == "None":
     raise Exception("Error on init: env vars not initialized")
 
 
